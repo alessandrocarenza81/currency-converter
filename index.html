@@ -1,0 +1,176 @@
+```html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertitore di Valuta/Unità di Misura</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        select, input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Convertitore di Valuta/Unità di Misura</h1>
+
+    <label for="type">Seleziona il tipo di conversione:</label>
+    <select id="type" onchange="toggleOptions()">
+        <option value="currency">Valuta</option>
+        <option value="length">Lunghezza</option>
+        <option value="weight">Peso</option>
+    </select>
+
+    <label for="from">Da:</label>
+    <select id="from"></select>
+
+    <label for="to">A:</label>
+    <select id="to"></select>
+
+    <label for="amount">Importo:</label>
+    <input type="number" id="amount" placeholder="Inserisci un valore">
+
+    <button onclick="convert()">Converti</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    const currencyOptions = [
+        { code: 'EUR', name: 'Euro' },
+        { code: 'USD', name: 'Dollaro Americano' },
+        { code: 'GBP', name: 'Sterlina Britannica' }
+    ];
+
+    const lengthOptions = [
+        { code: 'm', name: 'Metri' },
+        { code: 'km', name: 'Chilometri' },
+        { code: 'ft', name: 'Piedi' }
+    ];
+
+    const weightOptions = [
+        { code: 'kg', name: 'Chilogrammi' },
+        { code: 'g', name: 'Grammi' },
+        { code: 'lb', name: 'Libbre' }
+    ];
+
+    function toggleOptions() {
+        const type = document.getElementById('type').value;
+        const fromSelect = document.getElementById('from');
+        const toSelect = document.getElementById('to');
+
+        fromSelect.innerHTML = '';
+        toSelect.innerHTML = '';
+
+        let options = [];
+        if (type === 'currency') {
+            options = currencyOptions;
+        } else if (type === 'length') {
+            options = lengthOptions;
+        } else if (type === 'weight') {
+            options = weightOptions;
+        }
+
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.code;
+            opt.text = option.name;
+            fromSelect.add(opt.cloneNode(true));
+            toSelect.add(opt.cloneNode(true));
+        });
+    }
+
+    function convert() {
+        const type = document.getElementById('type').value;
+        const from = document.getElementById('from').value;
+        const to = document.getElementById('to').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+
+        if (isNaN(amount) || amount <= 0) {
+            document.getElementById('result').textContent = 'Inserisci un importo valido.';
+            return;
+        }
+
+        let result;
+
+        if (type === 'currency') {
+            // Esempio di tasso di cambio fittizio
+            const rates = {
+                EUR: 1,
+                USD: 1.1,
+                GBP: 0.9
+            };
+            result = (amount * rates[to] / rates[from]).toFixed(2);
+        } else if (type === 'length') {
+            const factors = {
+                m: 1,
+                km: 1000,
+                ft: 0.3048
+            };
+            result = (amount * factors[from] / factors[to]).toFixed(2);
+        } else if (type === 'weight') {
+            const factors = {
+                kg: 1,
+                g: 0.001,
+                lb: 0.453592
+            };
+            result = (amount * factors[from] / factors[to]).toFixed(2);
+        }
+
+        document.getElementById('result').textContent = `${amount} ${from} = ${result} ${to}`;
+    }
+
+    toggleOptions();
+</script>
+
+</body>
+</html>
+```
